@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: waterfall
+  m_Shader: {fileID: 4800000, guid: bc7547f54358da84ab4cc4c1af36b0d1, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: 8c89a36f6988835449eb5e7d63b80e55, type: 3}
+        m_Scale: {x: 2, y: 2}
+        m_Offset: {x: 0, y: 0}
+    - _Cube:
+        m_Texture: {fileID: 8900000, guid: 8bf333b73a1e22b46b342c6570d08667, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _CubeTex:
+        m_Texture: {fileID: 8900000, guid: 8bf333b73a1e22b46b342c6570d08667, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FoamTex:
+        m_Texture: {fileID: 2800000, guid: 0ecb8fcaeda4c8646836686a9ea45d1e, type: 3}
+        m_Scale: {x: 2, y: 5}
+        m_Offset: {x: 0, y: 0}
+    - _HeightTex:
+        m_Texture: {fileID: 2800000, guid: cf8640e78838c06429f4a9a339834963, type: 3}
+        m_Scale: {x: 2, y: 2}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: 9613277e20d37f74d9b8eb7deaf69413, type: 3}
+        m_Scale: {x: 1, y: 2}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _Ambient: 1
+    - _BumpReflectionStr: 0.735849
+    - _ChromaticDispersion: 0.6792453
+    - _ColorTextureOverlay: 0.45283014
+    - _Displacement: 0.05905658
+    - _DisplacementTiling: 1.5716981
+    - _FresnelPower: 10
+    - _InvFade: 0.6264152
+    - _InvFadeDisplacement: 0.5169811
+    - _InvFadeFoam: 0.7198112
+    - _ReflToRefrExponent: 2
+    - _Reflectivity: 1
+    - _Refraction: 75.471695
+    - _Refractivity: 100
+    - _Shininess: 60
+    - _ShoreFactor: 0.8226415
+    - _ShoreFadeFactor: 0.8594338
+    - _Speed: 0.33962265
+    m_Colors:
+    - _Color: {r: 0.8134328, g: 0.8982361, b: 1, a: 1}
+    - _Emission: {r: 0, g: 0, b: 0, a: 0}
+    - _ReflectColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SpecColor: {r: 0.3137255, g: 0.30588236, b: 0.29411766, a: 1}
+    - _TintColor: {r: 1, g: 0.9793341, b: 0.9328358, a: 1}
+    - _WorldLightDir: {r: 0.56322485, g: 0.5965213, b: 0.57178694, a: 0}
+--- !u!1002 &2100001
+EditorExtensionImpl:
+  serializedVersion: 6
