@@ -4,10 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - wood
   - metal
   - concrete
   - dirt
+  - wood
   - glass
   layers:
   - Default

@@ -7,8 +7,9 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: 
-  fontNames: []
+  fontName: Courier
+  fontNames:
+  - Courier
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0

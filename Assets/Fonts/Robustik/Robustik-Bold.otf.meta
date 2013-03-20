@@ -7,10 +7,11 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: 
+  fontName: Robustik
   fontNames:
-  - 
-  fallbackFontReferences: []
+  - Robustik
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 785f8151d0c5be24f872da5db2e9499d, type: 3}
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1
