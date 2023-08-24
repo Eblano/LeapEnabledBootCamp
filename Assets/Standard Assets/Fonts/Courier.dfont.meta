@@ -1,6 +1,7 @@
 fileFormatVersion: 2
 guid: ef9bce5dbd11a2c3d000dc0b8d76c639
 TrueTypeFontImporter:
+  externalObjects: {}
   serializedVersion: 4
   fontSize: 24
   forceTextureCase: 0
@@ -14,6 +15,7 @@ TrueTypeFontImporter:
   fontRenderingMode: 0
   ascentCalculationMode: 1
   useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
   userData: 
   assetBundleName: 
   assetBundleVariant: 

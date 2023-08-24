@@ -4,6 +4,16 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - SpawnPoint
+  - Enemy
+  - Ragdoll
+  - Ground
+  - Water
+  - Tree
+  - Glass
+  - Metal
+  - Wood
+  - Concrete
   - metal
   - concrete
   - dirt
@@ -18,11 +28,11 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Enemy
+  - Ragdoll
+  - Floor
+  - Props
   - 
   - 
   - 

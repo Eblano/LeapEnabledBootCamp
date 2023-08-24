@@ -1,6 +1,7 @@
 fileFormatVersion: 2
 guid: b3433daf007994da9a3abeabdb79db4e
 MonoImporter:
+  externalObjects: {}
   serializedVersion: 2
   defaultReferences:
   - addAlphaHackShader: {fileID: 4800000, guid: b708c6968aee044a79ee006e3e270d2d,

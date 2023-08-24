@@ -85,10 +85,6 @@ class SoldierCamera extends MonoBehaviour
 	
 	public var radar : Transform;
 	public var radarCamera : Transform;
-	
-	// pxs Leap Mod
-	public var leapEnabled : boolean = false;
-  
 
     private var _depthOfFieldEffect : DepthOfField;
 	
@@ -135,22 +131,10 @@ class SoldierCamera extends MonoBehaviour
 		if(GameManager.pause || GameManager.scores) return;
 		//if(GameManager.scores) return;
 
-		if (leapEnabled == true)
+		if(orbit && (Input.GetKeyDown(KeyCode.O) || Input.GetAxis("Horizontal") != 0.0 || Input.GetAxis("Vertical") != 0.0 || soldierController.aim || soldierController.fire))
 		{
-			// Make sure we reset teh idle timer if we are moving via Leap, otherwise, we enter into Orbit Mode with funny results
-			if(orbit && (Input.GetKeyDown(KeyCode.O) || pxsLeapInput.GetHandAxisStep("Horizontal") != 0.0 || pxsLeapInput.GetHandAxisStep("Depth") != 0.0 || soldierController.aim || soldierController.fire))
-			{
-				GoToOrbitMode(false);
-			}
+			GoToOrbitMode(false);
 		}
-		else
-		{
-			if(orbit && (Input.GetKeyDown(KeyCode.O) || Input.GetAxis("Horizontal") != 0.0 || Input.GetAxis("Vertical") != 0.0 || soldierController.aim || soldierController.fire))
-			{
-				GoToOrbitMode(false);
-			}
-		}
-
 		
 		if(!orbit && soldierController.idleTimer > 0.1)
 		{
@@ -301,22 +285,8 @@ class SoldierCamera extends MonoBehaviour
 	function GetInput()
 	{
 		var a : Vector2 = soldierController.aim ? aimSpeed : speed;
-		
-		if (leapEnabled == true)
-		{
-			x += Mathf.Clamp(pxsLeapInput.GetHandAxis("Mouse X") * a.x, -maxSpeed.x, maxSpeed.x) * deltaTime;
-			y -= Mathf.Clamp(pxsLeapInput.GetHandAxis("Mouse Y") * a.y, -maxSpeed.y, maxSpeed.y) * deltaTime;
-			// print (pxsLeapInput.Errors);
-		}
-		else
-		{
-			x += Mathf.Clamp(Input.GetAxis("Mouse X") * a.x, -maxSpeed.x, maxSpeed.x) * deltaTime;
-			y -= Mathf.Clamp(Input.GetAxis("Mouse Y") * a.y, -maxSpeed.y, maxSpeed.y) * deltaTime;
-		}
-		
-		
-		
-		
+		x += Mathf.Clamp(Input.GetAxis("Mouse X") * a.x, -maxSpeed.x, maxSpeed.x) * deltaTime;
+		y -= Mathf.Clamp(Input.GetAxis("Mouse Y") * a.y, -maxSpeed.y, maxSpeed.y) * deltaTime;
 		y = ClampAngle(y, yMinLimit, yMaxLimit);
 	}
 

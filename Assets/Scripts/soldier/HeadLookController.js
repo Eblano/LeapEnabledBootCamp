@@ -35,7 +35,7 @@ public var target = Vector3.zero;
 public var targetTransform : Transform;
 public var effect = 1.0;
 public var overrideAnimation = false;
- 
+   
 function Start ()
 {
     if (rootNode == null) {
