@@ -1,7 +1,6 @@
 fileFormatVersion: 2
 guid: a0cbd66fb272e4805bdbb4beb41f3bd2
 MonoImporter:
-  externalObjects: {}
   serializedVersion: 2
   defaultReferences:
   - weightedBlurShader: {fileID: 4800000, guid: 79cf3e10f8d0a4256b7c3f6018a76091,

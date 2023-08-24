@@ -1,7 +1,6 @@
 fileFormatVersion: 2
 guid: 4fc4c2fff9a564b9aa966b3d9ee24c18
 MonoImporter:
-  externalObjects: {}
   serializedVersion: 2
   defaultReferences:
   - edgeDetectHqShader: {fileID: 4800000, guid: 486c935c7fbf94528b2c56c957829fb6,

@@ -21,6 +21,11 @@ class SoldierController extends MonoBehaviour
 	
 	public var weaponSystem : GunManager;
 	public var minCarDistance : float;
+	// pxs Leap modifictaion 
+	public var leapEnabledVerticalAxis : boolean = false;
+	public var leapEnabledHorizontalAxis : boolean = false;
+	public var leapEnabledFire : boolean = false;
+	public var hideMouse : boolean = false;
 	
 	static public var dead : boolean;
 	
@@ -96,6 +101,14 @@ class SoldierController extends MonoBehaviour
 
 		controller = gameObject.GetComponent("CharacterController");
 		motor = gameObject.GetComponent("CharacterMotor");
+		if (hideMouse == true)
+		{
+			Cursor.visible = false;
+		}
+		else
+		{
+			Cursor.visible = true;
+		}
 	}
 	
 	function OnEnable()
@@ -145,7 +158,33 @@ class SoldierController extends MonoBehaviour
 			
 			if(!dead)
 			{
-				moveDir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+				// moveDir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+				// pxsLeap
+				var x : float = 0;
+				var z : float = 0;
+				
+				if (leapEnabledHorizontalAxis == true)
+				{
+					x = pxsLeapInput.GetHandAxisStep("Horizontal");
+				}
+				else
+				{
+					x = Input.GetAxis("Horizontal");
+				}
+				
+				
+				if (leapEnabledVerticalAxis == true)
+				{
+					z = pxsLeapInput.GetHandAxisStep("Depth");
+				}
+				else
+				{
+					z = Input.GetAxis("Vertical");
+				}
+							
+				// moveDir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+				 moveDir = new Vector3(x, 0, z);
+				
 			}
 			else
 			{
@@ -181,11 +220,22 @@ class SoldierController extends MonoBehaviour
 	
 	function GetUserInputs()
 	{
+		// pxs Leap Mod
+		// if leapenabled, check fire from leap
+		var fireLeap : boolean = false;
+		var aimLeap : boolean = false;
+		if (leapEnabledFire == true)
+		{
+			fireLeap = pxsLeapInput.GetHandGesture("Fire1") && weaponSystem.currentGun.freeToShoot && !dead && !inAir;
+			// aimLeap = pxsLeapInput.GetHandGesture("RotationFire2") && !dead;
+			// print ("Aim Leap: " + aimLeap.ToString());
+
+		}
 		//Check if the user if firing the weapon
-		fire = Input.GetButton("Fire1") && weaponSystem.currentGun.freeToShoot && !dead && !inAir;
+		fire = fireLeap || (Input.GetButton("Fire1") && weaponSystem.currentGun.freeToShoot && !dead && !inAir);
 		
 		//Check if the user is aiming the weapon
-		aim = Input.GetButton("Fire2") && !dead;
+		aim = aimLeap || (Input.GetButton("Fire2") && !dead);
 		
 		idleTimer += Time.deltaTime;
 		
@@ -216,7 +266,7 @@ class SoldierController extends MonoBehaviour
 			idleTimer = 0.0;
 		}
 		
-		crouch |= dead;
+		// crouch |= dead;
 		
 		//Check if the user wants the soldier to walk
 		walk = (!Input.GetKey(KeyCode.LeftShift) && !dead) || moveDir == Vector3.zero || crouch;
