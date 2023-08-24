@@ -136,8 +136,8 @@
      <Compile Include="Assets\Scripts\misc\SyncAudioListener.cs" />
      <Compile Include="Assets\Scripts\misc\UnderwaterCamera.cs" />
      <Compile Include="Assets\Scripts\misc\UVScroller_clouds.cs" />
-     <Compile Include="Assets\Scripts\misc\UVScroller_simple 1.cs" />
      <Compile Include="Assets\Scripts\misc\UVScroller_simple.cs" />
+     <Compile Include="Assets\Scripts\misc\UVScroller_simple_1.cs" />
      <Compile Include="Assets\Scripts\misc\UVScroller_water.cs" />
      <Compile Include="Assets\Scripts\misc\UVScroller_waterfall.cs" />
      <Compile Include="Assets\Scripts\physics\IgnoreCollider.cs" />

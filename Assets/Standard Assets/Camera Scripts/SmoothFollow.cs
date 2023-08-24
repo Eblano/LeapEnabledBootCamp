@@ -33,16 +33,16 @@ public partial class SmoothFollow : MonoBehaviour
             return;
         }
         // Calculate the current rotation angles
-        wantedRotationAngle = this.target.eulerAngles.y;
-        wantedHeight = this.target.position.y + this.height;
-        currentRotationAngle = this.transform.eulerAngles.y;
-        currentHeight = this.transform.position.y;
+        var wantedRotationAngle = this.target.eulerAngles.y;
+        var wantedHeight = this.target.position.y + this.height;
+        var currentRotationAngle = this.transform.eulerAngles.y;
+        var currentHeight = this.transform.position.y;
         // Damp the rotation around the y-axis
         currentRotationAngle = Mathf.LerpAngle(currentRotationAngle, wantedRotationAngle, this.rotationDamping * Time.deltaTime);
         // Damp the height
         currentHeight = Mathf.Lerp(currentHeight, wantedHeight, this.heightDamping * Time.deltaTime);
         // Convert the angle into a rotation
-        currentRotation = Quaternion.Euler(0, currentRotationAngle, 0);
+        var currentRotation = Quaternion.Euler(0, currentRotationAngle, 0);
         // Set the position of the camera on the x-z plane to:
         // distance meters behind the target
         this.transform.position = this.target.position;

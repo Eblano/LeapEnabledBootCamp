@@ -8,10 +8,10 @@ public class WaterInteractions : MonoBehaviour
     private SoldierController controller;
     private bool emitMovement;
     public Transform movementContainer;
-    public ParticleEmitter[] movementEmitters;
+    public ParticleSystem[] movementEmitters;
     private bool emitStand;
     public Transform standingContainer;
-    public ParticleEmitter[] standingEmitters;
+    public ParticleSystem[] standingEmitters;
     public float jumpHitDistance;
     public GameObject jumpParticle;
     //public var jumpEmitters : ParticleEmitter[];
@@ -58,7 +58,7 @@ public class WaterInteractions : MonoBehaviour
         i = 0;
         while (i < this.movementEmitters.Length)
         {
-            this.movementEmitters[i].emit = false;
+            this.movementEmitters[i].enableEmission = false;
             i++;
         }
         this.emitStand = false;
@@ -66,7 +66,7 @@ public class WaterInteractions : MonoBehaviour
         i = 0;
         while (i < this.standingEmitters.Length)
         {
-            this.standingEmitters[i].emit = false;
+            this.standingEmitters[i].enableEmission = false;
             i++;
         }
         this.thisT = this.transform;
@@ -220,17 +220,17 @@ public class WaterInteractions : MonoBehaviour
                 go.GetComponent<AudioSource>().PlayOneShot(this.waterJumpingSound, 1);
             }
         }
-        ParticleEmitter emitter = null;
+        ParticleSystem emitter = null;
         int i = 0;
         while (i < go.transform.childCount)
         {
-            emitter = go.transform.GetChild(i).GetComponent("ParticleEmitter") as ParticleEmitter;
+            emitter = go.transform.GetChild(i).GetComponent("ParticleSystem") as ParticleSystem;
             if (emitter == null)
             {
                 goto Label_for_72;
             }
-            emitter.emit = false;
-            emitter.Emit();
+            emitter.enableEmission = false;
+            emitter.Play();
             Label_for_72:
             i++;
         }
@@ -248,7 +248,7 @@ public class WaterInteractions : MonoBehaviour
         int i = 0;
         while (i < this.movementEmitters.Length)
         {
-            this.movementEmitters[i].emit = b;
+            this.movementEmitters[i].enableEmission = b;
             i++;
         }
     }
@@ -263,7 +263,7 @@ public class WaterInteractions : MonoBehaviour
         int i = 0;
         while (i < this.standingEmitters.Length)
         {
-            this.standingEmitters[i].emit = b;
+            this.standingEmitters[i].enableEmission = b;
             i++;
         }
     }

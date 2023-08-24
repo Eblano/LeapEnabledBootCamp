@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class Turret : MonoBehaviour
@@ -205,24 +206,29 @@ public class Turret : MonoBehaviour
                 case "wood":
                     hitType = HitType.WOOD;
                     go = GameObject.Instantiate(this.woodParticle, hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                    break;
                 case "metal":
                     hitType = HitType.METAL;
                     go = GameObject.Instantiate(this.metalParticle, hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                    break;
                 case "car":
                     hitType = HitType.METAL;
                     go = GameObject.Instantiate(this.metalParticle, hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                    break;
                 case "concrete":
                     hitType = HitType.CONCRETE;
                     go = GameObject.Instantiate(this.concreteParticle, hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                    break;
                 case "dirt":
                     hitType = HitType.CONCRETE;
                     go = GameObject.Instantiate(this.sandParticle, hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                    break;
                 case "sand":
                     hitType = HitType.CONCRETE;
                     go = GameObject.Instantiate(this.sandParticle, hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                    break;
                 default:
                     return;
-                    break;
             }
             go.layer = hit.collider.gameObject.layer;
             if (hit.collider.GetComponent<Renderer>() == null)
@@ -237,7 +243,6 @@ public class Turret : MonoBehaviour
 
     public virtual void Destruct()
     {
-        int i = 0;
         if (this.dead)
         {
             return;
@@ -249,7 +254,7 @@ public class Turret : MonoBehaviour
         {
             int length = this.parts.Length;
             Transform t = null;
-            i = 0;
+            int i = 0;
             while (i < length)
             {
                 t = this.parts[i] as Transform;
@@ -258,7 +263,7 @@ public class Turret : MonoBehaviour
                 Renderer r = t.gameObject.GetComponent<Renderer>();
                 mat.mainTexture = r.material.mainTexture;
                 r.material = mat;
-                if (t.gameObject.GetComponent("TrainingDummyPartDestructor") == null)
+                if (t.gameObject.GetComponent<TrainingDummyPartDestructor>() == null)
                 {
                     t.gameObject.AddComponent<TrainingDummyPartDestructor>();
                 }
@@ -268,26 +273,27 @@ public class Turret : MonoBehaviour
                 }
                 i++;
             }
-            object[] p = new object[0];
-            i = 0;
-            while (i < length)
+
+            List<Transform> tempList = new List<Transform>(); // Здесь используем другое имя переменной
+            int j = 0; // Используем другое имя для переменной цикла
+            while (j < length)
             {
-                t = this.parts[i] as Transform;
-                if (t.childCount > 0)
+                Transform childT = this.parts[j] as Transform;
+                if (childT.childCount > 0)
                 {
                     int k = 0;
-                    while (k < t.childCount)
+                    while (k < childT.childCount)
                     {
-                        p.Add(t.GetChild(k));
+                        tempList.Add(childT.GetChild(k));
                         k++;
                     }
-                    foreach (Transform a in p)
+                    foreach (Transform a in tempList)
                     {
                         UnityEngine.Object.Destroy(a.gameObject);
                     }
+                    tempList.Clear();
                 }
-                p.Clear();
-                i++;
+                j++;
             }
         }
         UnityEngine.Object.Destroy(this);

@@ -91,7 +91,7 @@ public class DownChoperCutscene : MonoBehaviour
                     }
                     if (this.particles[p].emission.enabled)
                     {
-                        this.particles[p].emission.enabled = false;
+                        this.particles[p].enableEmission = false;
                     }
                     Label_for_4:
                     p++;
@@ -130,7 +130,7 @@ public class DownChoperCutscene : MonoBehaviour
                         }
                         if (!this.particles[p].emission.enabled)
                         {
-                            this.particles[p].emission.enabled = true;
+                            this.particles[p].enableEmission = true;
                         }
                         Label_for_5:
                         p++;

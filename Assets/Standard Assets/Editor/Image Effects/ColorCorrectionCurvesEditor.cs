@@ -1,153 +1,141 @@
-using UnityEngine;
+using System;
 using UnityEditor;
-using System.Collections;
+using UnityEngine;
 
-[System.Serializable]
-[UnityEditor.CustomEditor(typeof(ColorCorrectionCurves))]
-[UnityEngine.ExecuteInEditMode]
-public partial class ColorCorrectionCurvesEditor : Editor
+namespace UnityStandardAssets.ImageEffects
 {
-    public bool showShaders;
-    public virtual void Awake()
-    {
-    }
+    [CustomEditor (typeof(ColorCorrectionCurves))]
+    class ColorCorrectionCurvesEditor : Editor {
+        SerializedObject serObj;
 
-    public virtual void OnEnable()
-    {
-        if (this.target.redChannel == null)
-        {
-            this.target.redChannel = new AnimationCurve(new Keyframe[] {new Keyframe(0, 0f, 1f, 1f), new Keyframe(1, 1f, 1f, 1f)});
-        }
-        if (this.target.greenChannel == null)
-        {
-            this.target.greenChannel = new AnimationCurve(new Keyframe[] {new Keyframe(0, 0f, 1f, 1f), new Keyframe(1, 1f, 1f, 1f)});
-        }
-        if (this.target.blueChannel == null)
-        {
-            this.target.blueChannel = new AnimationCurve(new Keyframe[] {new Keyframe(0, 0f, 1f, 1f), new Keyframe(1, 1f, 1f, 1f)});
-        }
-        if (this.target.depthRedChannel == null)
-        {
-            this.target.depthRedChannel = new AnimationCurve(new Keyframe[] {new Keyframe(0, 0f, 1f, 1f), new Keyframe(1, 1f, 1f, 1f)});
-        }
-        if (this.target.depthGreenChannel == null)
-        {
-            this.target.depthGreenChannel = new AnimationCurve(new Keyframe[] {new Keyframe(0, 0f, 1f, 1f), new Keyframe(1, 1f, 1f, 1f)});
-        }
-        if (this.target.depthBlueChannel == null)
-        {
-            this.target.depthBlueChannel = new AnimationCurve(new Keyframe[] {new Keyframe(0, 0f, 1f, 1f), new Keyframe(1, 1f, 1f, 1f)});
-        }
-        if (this.target.zCurve == null)
-        {
-            this.target.zCurve = new AnimationCurve(new Keyframe[] {new Keyframe(0, 0f, 1f, 1f), new Keyframe(1, 1f, 1f, 1f)});
-        }
-        EditorUtility.SetDirty(this.target);
-    }
+        SerializedProperty mode;
 
-    public override void OnInspectorGUI()
-    {
-        this.target.mode = EditorGUILayout.EnumPopup("Mode", this.target.mode, EditorStyles.popup, new GUILayoutOption[] {});
-        EditorGUILayout.Separator();
-        EditorGUILayout.BeginHorizontal(new GUILayoutOption[] {});
-        this.target.redChannel = EditorGUILayout.CurveField(new GUIContent("Red"), this.target.redChannel, Color.red, new Rect(0f, 0f, 1f, 1f), new GUILayoutOption[] {});
-        //EditorGUILayout.CurveField (GUIContent("Red"), property, settings );
-        if (GUILayout.Button("Reset", new GUILayoutOption[] {}))
-        {
-            this.target.redChannel = EditorGUILayout.CurveField(new GUIContent("Red"), new AnimationCurve(new Keyframe[] {new Keyframe(0, 0f, 1f, 1f), new Keyframe(1, 1f, 1f, 1f)}), Color.red, new Rect(0f, 0f, 1f, 1f), new GUILayoutOption[] {});
-            this.target.updateTextures = true;
-            EditorUtility.SetDirty(this.target);
+        SerializedProperty redChannel;
+        SerializedProperty greenChannel;
+        SerializedProperty blueChannel;
+
+        SerializedProperty useDepthCorrection;
+
+        SerializedProperty depthRedChannel;
+        SerializedProperty depthGreenChannel;
+        SerializedProperty depthBlueChannel;
+
+        SerializedProperty zCurveChannel;
+
+        SerializedProperty saturation;
+
+        SerializedProperty selectiveCc;
+        SerializedProperty selectiveFromColor;
+        SerializedProperty selectiveToColor;
+
+        private bool  applyCurveChanges = false;
+
+        void OnEnable () {
+            serObj = new SerializedObject (target);
+
+            mode = serObj.FindProperty ("mode");
+
+            saturation = serObj.FindProperty ("saturation");
+
+            redChannel = serObj.FindProperty ("redChannel");
+            greenChannel = serObj.FindProperty ("greenChannel");
+            blueChannel = serObj.FindProperty ("blueChannel");
+
+            useDepthCorrection = serObj.FindProperty ("useDepthCorrection");
+
+            zCurveChannel = serObj.FindProperty ("zCurve");
+
+            depthRedChannel = serObj.FindProperty ("depthRedChannel");
+            depthGreenChannel = serObj.FindProperty ("depthGreenChannel");
+            depthBlueChannel = serObj.FindProperty ("depthBlueChannel");
+
+            if (redChannel.animationCurveValue.length > 0)
+                redChannel.animationCurveValue = new AnimationCurve(new Keyframe(0, 0.0f, 1.0f, 1.0f), new Keyframe(1, 1.0f, 1.0f, 1.0f));
+            if (greenChannel.animationCurveValue.length > 0)
+                greenChannel.animationCurveValue = new AnimationCurve(new Keyframe(0, 0.0f, 1.0f, 1.0f), new Keyframe(1, 1.0f, 1.0f, 1.0f));
+            if (blueChannel.animationCurveValue.length > 0)
+                blueChannel.animationCurveValue = new AnimationCurve(new Keyframe(0, 0.0f, 1.0f, 1.0f), new Keyframe(1, 1.0f, 1.0f, 1.0f));
+
+            if (depthRedChannel.animationCurveValue.length > 0)
+                depthRedChannel.animationCurveValue = new AnimationCurve(new Keyframe(0, 0.0f, 1.0f, 1.0f), new Keyframe(1, 1.0f, 1.0f, 1.0f));
+            if (depthGreenChannel.animationCurveValue.length > 0)
+                depthGreenChannel.animationCurveValue = new AnimationCurve(new Keyframe(0, 0.0f, 1.0f, 1.0f), new Keyframe(1, 1.0f, 1.0f, 1.0f));
+            if (depthBlueChannel.animationCurveValue.length > 0 )
+                depthBlueChannel.animationCurveValue = new AnimationCurve(new Keyframe(0, 0.0f, 1.0f, 1.0f), new Keyframe(1, 1.0f, 1.0f, 1.0f));
+
+            if (zCurveChannel.animationCurveValue.length > 0)
+                zCurveChannel.animationCurveValue = new AnimationCurve(new Keyframe(0, 0.0f, 1.0f, 1.0f), new Keyframe(1, 1.0f, 1.0f, 1.0f));
+
+            serObj.ApplyModifiedProperties ();
+
+            selectiveCc = serObj.FindProperty ("selectiveCc");
+            selectiveFromColor = serObj.FindProperty ("selectiveFromColor");
+            selectiveToColor = serObj.FindProperty ("selectiveToColor");
         }
-        EditorGUILayout.EndHorizontal();
-        EditorGUILayout.BeginHorizontal(new GUILayoutOption[] {});
-        this.target.greenChannel = EditorGUILayout.CurveField(new GUIContent("Green"), this.target.greenChannel, Color.green, new Rect(0f, 0f, 1f, 1f), new GUILayoutOption[] {});
-        if (GUILayout.Button("Reset", new GUILayoutOption[] {}))
-        {
-            this.target.greenChannel = EditorGUILayout.CurveField(new GUIContent("Green"), new AnimationCurve(new Keyframe[] {new Keyframe(0, 0f, 1f, 1f), new Keyframe(1, 1f, 1f, 1f)}), Color.green, new Rect(0f, 0f, 1f, 1f), new GUILayoutOption[] {});
-            this.target.updateTextures = true;
-            EditorUtility.SetDirty(this.target);
+
+        void CurveGui ( string name, SerializedProperty animationCurve, Color color) {
+            // @NOTE: EditorGUILayout.CurveField is buggy and flickers, using PropertyField for now
+            //animationCurve.animationCurveValue = EditorGUILayout.CurveField (GUIContent (name), animationCurve.animationCurveValue, color, Rect (0.0f,0.0f,1.0f,1.0f));
+            EditorGUILayout.PropertyField (animationCurve, new GUIContent (name));
+            if (GUI.changed)
+                applyCurveChanges = true;
         }
-        EditorGUILayout.EndHorizontal();
-        EditorGUILayout.BeginHorizontal(new GUILayoutOption[] {});
-        this.target.blueChannel = EditorGUILayout.CurveField(new GUIContent("Blue"), this.target.blueChannel, Color.blue, new Rect(0f, 0f, 1f, 1f), new GUILayoutOption[] {});
-        if (GUILayout.Button("Reset", new GUILayoutOption[] {}))
-        {
-            this.target.blueChannel = EditorGUILayout.CurveField(new GUIContent("Blue"), new AnimationCurve(new Keyframe[] {new Keyframe(0, 0f, 1f, 1f), new Keyframe(1, 1f, 1f, 1f)}), Color.blue, new Rect(0f, 0f, 1f, 1f), new GUILayoutOption[] {});
-            this.target.updateTextures = true;
-            EditorUtility.SetDirty(this.target);
+
+        void BeginCurves () {
+            applyCurveChanges = false;
         }
-        EditorGUILayout.EndHorizontal();
-        EditorGUILayout.Separator();
-        //target.useDepthCorrection = EditorGUILayout.Toggle ("Depth Correction", target.useDepthCorrection);
-        if (this.target.mode > 0)
-        {
-            this.target.useDepthCorrection = true;
-        }
-        else
-        {
-            this.target.useDepthCorrection = false;
-        }
-        if (this.target.useDepthCorrection != null)
-        {
-            EditorGUILayout.Separator();
-            EditorGUILayout.BeginHorizontal(new GUILayoutOption[] {});
-            this.target.depthRedChannel = EditorGUILayout.CurveField(new GUIContent("Red (Depth)"), this.target.depthRedChannel, Color.red, new Rect(0f, 0f, 1f, 1f), new GUILayoutOption[] {});
-            if (GUILayout.Button("Reset", new GUILayoutOption[] {}))
-            {
-                this.target.depthRedChannel = EditorGUILayout.CurveField(new GUIContent("Red (Depth)"), new AnimationCurve(new Keyframe[] {new Keyframe(0, 0f, 1f, 1f), new Keyframe(1, 1f, 1f, 1f)}), Color.red, new Rect(0f, 0f, 1f, 1f), new GUILayoutOption[] {});
-                this.target.updateTextures = true;
-                EditorUtility.SetDirty(this.target);
+
+        void ApplyCurves () {
+            if (applyCurveChanges) {
+                serObj.ApplyModifiedProperties ();
+                (serObj.targetObject as ColorCorrectionCurves).gameObject.SendMessage ("UpdateTextures");
             }
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.BeginHorizontal(new GUILayoutOption[] {});
-            this.target.depthGreenChannel = EditorGUILayout.CurveField(new GUIContent("Green (Depth)"), this.target.depthGreenChannel, Color.green, new Rect(0f, 0f, 1f, 1f), new GUILayoutOption[] {});
-            if (GUILayout.Button("Reset", new GUILayoutOption[] {}))
-            {
-                this.target.depthGreenChannel = EditorGUILayout.CurveField(new GUIContent("Green (Depth)"), new AnimationCurve(new Keyframe[] {new Keyframe(0, 0f, 1f, 1f), new Keyframe(1, 1f, 1f, 1f)}), Color.green, new Rect(0f, 0f, 1f, 1f), new GUILayoutOption[] {});
-                this.target.updateTextures = true;
-                EditorUtility.SetDirty(this.target);
-            }
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.BeginHorizontal(new GUILayoutOption[] {});
-            this.target.depthBlueChannel = EditorGUILayout.CurveField(new GUIContent("Blue (Depth)"), this.target.depthBlueChannel, Color.blue, new Rect(0f, 0f, 1f, 1f), new GUILayoutOption[] {});
-            if (GUILayout.Button("Reset", new GUILayoutOption[] {}))
-            {
-                this.target.depthBlueChannel = EditorGUILayout.CurveField(new GUIContent("Blue (Depth)"), new AnimationCurve(new Keyframe[] {new Keyframe(0, 0f, 1f, 1f), new Keyframe(1, 1f, 1f, 1f)}), Color.blue, new Rect(0f, 0f, 1f, 1f), new GUILayoutOption[] {});
-                this.target.updateTextures = true;
-                EditorUtility.SetDirty(this.target);
-            }
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Separator();
-            EditorGUILayout.BeginHorizontal(new GUILayoutOption[] {});
-            this.target.zCurve = EditorGUILayout.CurveField(new GUIContent("z Curve"), this.target.zCurve, Color.white, new Rect(0f, 0f, 1f, 1f), new GUILayoutOption[] {});
-            if (GUILayout.Button("Reset", new GUILayoutOption[] {}))
-            {
-                this.target.zCurve = EditorGUILayout.CurveField(new GUIContent("z Curve"), new AnimationCurve(new Keyframe[] {new Keyframe(0, 0f, 1f, 1f), new Keyframe(1, 1f, 1f, 1f)}), Color.white, new Rect(0f, 0f, 1f, 1f), new GUILayoutOption[] {});
-                this.target.updateTextures = true;
-                EditorUtility.SetDirty(this.target);
-            }
-            EditorGUILayout.EndHorizontal();
         }
-        EditorGUILayout.Separator();
-        this.target.selectiveCc = EditorGUILayout.Toggle("Selective", this.target.selectiveCc, new GUILayoutOption[] {});
-        if (this.target.selectiveCc != null)
-        {
-            this.target.selectiveFromColor = EditorGUILayout.ColorField("Key color", this.target.selectiveFromColor, new GUILayoutOption[] {});
-            this.target.selectiveToColor = EditorGUILayout.ColorField("Target color", this.target.selectiveToColor, new GUILayoutOption[] {});
-        }
-        EditorGUILayout.Separator();
-        object oldCurveResolution = this.target.curveResolution;
-        this.target.curveResolution = EditorGUILayout.IntSlider("Curve Resolution", (int) this.target.curveResolution, 8, 256, new GUILayoutOption[] {});
-        this.target.curveResolution = Mathf.ClosestPowerOfTwo((int) this.target.curveResolution);
-        if (!(oldCurveResolution == this.target.curveResolution))
-        {
-        }
-        this.target.recreateTextures = true;
-        if (GUI.changed)
-        {
-            this.target.updateTextures = true;
-            EditorUtility.SetDirty(this.target);
+
+
+        public override void OnInspectorGUI () {
+            serObj.Update ();
+
+            GUILayout.Label ("Use curves to tweak RGB channel colors", EditorStyles.miniBoldLabel);
+
+            saturation.floatValue = EditorGUILayout.Slider( "Saturation", saturation.floatValue, 0.0f, 5.0f);
+
+            EditorGUILayout.PropertyField (mode, new GUIContent ("Mode"));
+            EditorGUILayout.Separator ();
+
+            BeginCurves ();
+
+            CurveGui (" Red", redChannel, Color.red);
+            CurveGui (" Green", greenChannel, Color.green);
+            CurveGui (" Blue", blueChannel, Color.blue);
+
+            EditorGUILayout.Separator ();
+
+            if (mode.intValue > 0)
+                useDepthCorrection.boolValue = true;
+            else
+                useDepthCorrection.boolValue = false;
+
+            if (useDepthCorrection.boolValue) {
+                CurveGui (" Red (depth)", depthRedChannel, Color.red);
+                CurveGui (" Green (depth)", depthGreenChannel, Color.green);
+                CurveGui (" Blue (depth)", depthBlueChannel, Color.blue);
+                EditorGUILayout.Separator ();
+                CurveGui (" Blend Curve", zCurveChannel, Color.grey);
+            }
+
+            EditorGUILayout.Separator ();
+            EditorGUILayout.PropertyField (selectiveCc, new GUIContent ("Selective"));
+            if (selectiveCc.boolValue) {
+                EditorGUILayout.PropertyField (selectiveFromColor, new GUIContent (" Key"));
+                EditorGUILayout.PropertyField (selectiveToColor, new GUIContent (" Target"));
+            }
+
+
+            ApplyCurves ();
+
+            if (!applyCurveChanges)
+                serObj.ApplyModifiedProperties ();
         }
     }
-
 }

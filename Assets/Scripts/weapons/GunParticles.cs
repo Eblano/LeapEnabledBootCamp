@@ -9,7 +9,7 @@ public class GunParticles : MonoBehaviour
     public virtual void Start()
     {
         this.cState = true;
-        this.emitters = this.GetComponentsInChildren(typeof(ParticleEmitter));
+        this.emitters = this.GetComponentsInChildren(typeof(ParticleSystem));
         this.ChangeState(false);
     }
 
@@ -25,7 +25,7 @@ public class GunParticles : MonoBehaviour
             int i = 0;
             while (i < this.emitters.Length)
             {
-                (this.emitters[i] as ParticleSystem).emission.enabled = p_newState;
+                (this.emitters[i] as ParticleSystem).enableEmission = p_newState;
                 i++;
             }
         }

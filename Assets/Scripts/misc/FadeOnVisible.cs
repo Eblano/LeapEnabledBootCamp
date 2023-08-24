@@ -23,7 +23,7 @@ public class FadeOnVisible : MonoBehaviour
         this.alpha = 0f;
         if (this.r == null)
         {
-            this.r = this.GetComponent<Renderer>();
+            this.r = this.GetComponent<MeshRenderer>();
             this.mLength = this.r.materials.Length;
             this.colors = new Color[this.mLength];
             this.originalMaterials = new Material[this.mLength];

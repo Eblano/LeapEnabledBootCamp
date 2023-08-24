@@ -338,26 +338,32 @@ public class Gun : MonoBehaviour
             case "wood":
                 hitType = HitType.WOOD;
                 go = GameObject.Instantiate(this.woodParticle, hitPoint, Quaternion.FromToRotation(Vector3.up, hitUpDir)) as GameObject;
+                break;
             case "metal":
                 hitType = HitType.METAL;
                 go = GameObject.Instantiate(this.metalParticle, hitPoint, Quaternion.FromToRotation(Vector3.up, hitUpDir)) as GameObject;
+                break;
             case "car":
                 hitType = HitType.METAL;
                 go = GameObject.Instantiate(this.metalParticle, hitPoint, Quaternion.FromToRotation(Vector3.up, hitUpDir)) as GameObject;
+                break;
             case "concrete":
                 hitType = HitType.CONCRETE;
                 go = GameObject.Instantiate(this.concreteParticle, hitPoint, Quaternion.FromToRotation(Vector3.up, hitUpDir)) as GameObject;
+                break;
             case "dirt":
                 hitType = HitType.CONCRETE;
                 go = GameObject.Instantiate(this.sandParticle, hitPoint, Quaternion.FromToRotation(Vector3.up, hitUpDir)) as GameObject;
+                break;
             case "sand":
                 hitType = HitType.CONCRETE;
                 go = GameObject.Instantiate(this.sandParticle, hitPoint, Quaternion.FromToRotation(Vector3.up, hitUpDir)) as GameObject;
+                break;
             case "water":
                 go = GameObject.Instantiate(this.waterParticle, hitPoint, Quaternion.FromToRotation(Vector3.up, hitUpDir)) as GameObject;
+                break;
             default:
                 return;
-                break;
         }
         go.layer = hit.collider.gameObject.layer;
         if (hit.collider.GetComponent<Renderer>() == null)

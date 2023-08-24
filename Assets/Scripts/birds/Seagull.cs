@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.WSA;
 
 [System.Serializable]
 public partial class Seagull : MonoBehaviour
@@ -53,20 +54,17 @@ public partial class Seagull : MonoBehaviour
         this.transform.parent = null;
         this.transformComponent = this.transform;
         Component[] tempSeagulls = new Component[0];
-        if (this.transform.parent)
+        if (transform.parent)
+            tempSeagulls = transform.parent.GetComponentsInChildren<Seagull>();
+        objects = new Transform[tempSeagulls.Length];
+        otherSeagulls = new Seagull[tempSeagulls.Length];
+        for (int i = 0; i < tempSeagulls.Length; i++)
         {
-            tempSeagulls = this.transform.parent.GetComponentsInChildren(typeof(Seagull));
+            objects[i] = tempSeagulls[i].transform;
+            otherSeagulls[i] = (Seagull)tempSeagulls[i];
         }
-        this.objects = new Transform[tempSeagulls.Length];
-        this.otherSeagulls = new Seagull[tempSeagulls.Length];
-        int i = 0;
-        while (i < tempSeagulls.Length)
-        {
-            this.objects[i] = tempSeagulls[i].transform;
-            this.otherSeagulls[i] = tempSeagulls[i];
-            i++;
-        }
-        this.StartCoroutine(this.UpdateRandom());
+
+        UpdateRandom();
     }
 
     public virtual IEnumerator UpdateRandom()
@@ -78,128 +76,137 @@ public partial class Seagull : MonoBehaviour
         }
     }
 
-    public virtual void Update()
+    void Update()
     {
-        if (this.origin == null)
+        if (origin == null)
         {
-            UnityEngine.Object.Destroy(this.gameObject);
+            Destroy(gameObject);
             return;
         }
+
         if (GameManager.pause)
         {
-            if (!this.paused)
+            if (!paused)
             {
-                this.paused = true;
-                this.animationComponent.Stop();
+                paused = true;
+                animationComponent.Stop();
             }
             return;
         }
         else
         {
-            if (this.paused)
+            if (paused)
             {
-                this.paused = false;
-                this.animationComponent.Blend("Take 001");
+                paused = false;
+                animationComponent.Blend("Take 001");
             }
         }
-        float speed = this.velocity.magnitude;
+
+        float speed = velocity.magnitude;
         Vector3 avoidPush = Vector3.zero;
         Vector3 avgPoint = Vector3.zero;
         int count = 0;
-        float f = 0f;
-        Vector3 myPosition = this.transformComponent.position;
-        int i = 0;
-        while (i < this.objects.Length)
+        float f = 0.0f;
+        Vector3 myPosition = transformComponent.position;
+
+        Vector3 forceV; // Объявляем forceV до цикла
+        float d; // Объявляем d до цикла
+        for (int i = 0; i < objects.Length; i++)
         {
-            Transform o = this.objects[i];
-            if (o != this.transformComponent)
+            Transform o = objects[i];
+            if (o != transformComponent)
             {
                 Vector3 otherPosition = o.position;
-                avgPoint = avgPoint + otherPosition;
+                avgPoint += otherPosition;
                 count++;
-                Vector3 forceV = myPosition - otherPosition;
-                float d = forceV.magnitude;
-                if (d < this.followRadius)
+
+                forceV = myPosition - otherPosition; // Присваиваем значение forceV
+                d = forceV.magnitude; // Присваиваем значение d
+                if (d < followRadius)
                 {
-                    if (d < this.avoidanceRadius)
+                    if (d < avoidanceRadius)
                     {
-                        f = 1f - (d / this.avoidanceRadius);
-                        if (d > 0)
-                        {
-                            avoidPush = avoidPush + (((forceV / d) * f) * this.avoidanceForce);
-                        }
+                        f = 1.0f - (d / avoidanceRadius);
+                        if (d > 0) avoidPush += (forceV / d) * f * avoidanceForce;
                     }
-                    f = d / this.followRadius;
-                    Seagull otherSealgull = this.otherSeagulls[i];
-                    avoidPush = avoidPush + ((otherSealgull.normalizedVelocity * f) * this.followVelocity);
+
+                    f = d / followRadius;
+                    Seagull otherSealgull = otherSeagulls[i];
+                    avoidPush += otherSealgull.normalizedVelocity * f * followVelocity;
                 }
             }
-            i++;
         }
+
+        Vector3 toAvg; // Объявляем toAvg до условного оператора
         if (count > 0)
         {
-            avoidPush = avoidPush / count;
-            Vector3 toAvg = (avgPoint / count) - myPosition;
+            avoidPush /= count;
+            toAvg = (avgPoint / count) - myPosition;
         }
         else
         {
             toAvg = Vector3.zero;
         }
-        if (this.target != null)
+
+        //Vector3 forceV; // Объявляем forceV
+        if (target != null)
         {
-            forceV = (this.origin.position + this.target.offset) - myPosition;
+            forceV = origin.position + target.offset - myPosition;
         }
         else
         {
-            forceV = this.origin.position - myPosition;
+            forceV = origin.position - myPosition;
         }
-        d = forceV.magnitude;
-        f = d / this.toOriginRange;
-        if (d > 0)
+
+        float d2 = forceV.magnitude;
+        f = d2 / toOriginRange;
+        if (d2 > 0) originPush = (forceV / d2) * f * toOriginForce;
+
+        if (speed < minSpeed && speed > 0)
         {
-            this.originPush = ((forceV / d) * f) * this.toOriginForce;
+            velocity = (velocity / speed) * minSpeed;
         }
-        if ((speed < this.minSpeed) && (speed > 0))
-        {
-            this.velocity = (this.velocity / speed) * this.minSpeed;
-        }
-        Vector3 wantedVel = this.velocity;
-        wantedVel = wantedVel - ((wantedVel * this.damping) * Time.deltaTime);
-        wantedVel = wantedVel + (this.randomPush * Time.deltaTime);
-        wantedVel = wantedVel + (this.originPush * Time.deltaTime);
-        wantedVel = wantedVel + (avoidPush * Time.deltaTime);
-        wantedVel = wantedVel + ((toAvg.normalized * this.gravity) * Time.deltaTime);
-        Vector3 diff = this.transformComponent.InverseTransformDirection(wantedVel - this.velocity).normalized;
-        this.bank = Mathf.Lerp(this.bank, diff.x, Time.deltaTime * 0.8f);
-        this.velocity = Vector3.RotateTowards(this.velocity, wantedVel, this.turnSpeed * Time.deltaTime, 100f);
-        this.transformComponent.rotation = Quaternion.FromToRotation(Vector3.right, this.velocity);
+
+        Vector3 wantedVel = velocity;
+        wantedVel -= wantedVel * damping * Time.deltaTime;
+        wantedVel += randomPush * Time.deltaTime;
+        wantedVel += originPush * Time.deltaTime;
+        wantedVel += avoidPush * Time.deltaTime;
+        wantedVel += toAvg.normalized * gravity * Time.deltaTime;
+
+
+        Vector3 diff = transformComponent.InverseTransformDirection(wantedVel - velocity).normalized;
+        bank = Mathf.Lerp(bank, diff.x, Time.deltaTime * 0.8f);
+        velocity = Vector3.RotateTowards(velocity, wantedVel, turnSpeed * Time.deltaTime, 100.00f);
+
+        transformComponent.rotation = Quaternion.FromToRotation(Vector3.right, velocity);
         //transformComponent.Rotate(0, 0, -bank * bankTurn);
+
         // Raycast
         float distance = speed * Time.deltaTime;
-        if ((this.raycast && (distance > 0f)) && Physics.Raycast(myPosition, this.velocity, out this.hit, distance))
+        if (raycast && distance > 0.00f && Physics.Raycast(myPosition, velocity, out hit, distance))
         {
-            this.velocity = Vector3.Reflect(this.velocity, this.hit.normal) * this.bounce;
+            velocity = Vector3.Reflect(velocity, hit.normal) * bounce;
         }
         else
         {
-            this.transformComponent.Translate(this.velocity * Time.deltaTime, Space.World);
+            transformComponent.Translate(velocity * Time.deltaTime, Space.World);
         }
+
         // Sounds
-        if (!(this.sounds == null))
+        if (sounds != null && sounds.Length > 0)
         {
-            if (this.sounds.Length > 0)
+            if (SeagullSoundHeat.heat < Mathf.Pow(Random.value, 1 / soundFrequency / Time.deltaTime))
             {
-                if (SeagullSoundHeat.heat < Mathf.Pow(Random.value, (1 / this.soundFrequency) / Time.deltaTime))
-                {
-                    AudioSource.PlayClipAtPoint(this.sounds[Random.Range(0, this.sounds.Length)], myPosition, 0.9f);
-                    SeagullSoundHeat.heat = SeagullSoundHeat.heat + ((1 / this.soundFrequency) / 10);
-                }
+                AudioSource.PlayClipAtPoint(sounds[Random.Range(0, sounds.Length)], myPosition, 0.90f);
+                SeagullSoundHeat.heat += (1 / soundFrequency) / 10;
             }
         }
-        this.normalizedVelocity = this.velocity.normalized;
+
+        normalizedVelocity = velocity.normalized;
     }
 
-    public Seagull()
+public Seagull()
     {
         this.sounds = new AudioClip[0];
         this.soundFrequency = 1f;

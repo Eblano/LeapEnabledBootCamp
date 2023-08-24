@@ -163,7 +163,7 @@ public class SoldierAnimations : MonoBehaviour
         this.reloading = this.soldier.reloading;
         this.currentWeapon = this.soldier.currentWeapon;
         this.moveDir = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
-        this.inAir = this.GetComponent("CharacterController").isGrounded == null;
+        this.inAir = this.GetComponent<CharacterController>().isGrounded == null;
     }
 
     //Method that initializes animations properties

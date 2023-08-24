@@ -499,7 +499,7 @@ public partial class CharacterMotor : MonoBehaviour
 
     public virtual void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        Vector3 normal = hit.collider.GetType() == BoxCollider ? Vector3.up : hit.normal;
+        Vector3 normal = hit.collider.GetType() == typeof(BoxCollider) ? Vector3.up : hit.normal;
         if (((normal.y > 0) && (normal.y > this.groundNormal.y)) && (hit.moveDirection.y < 0))
         {
             if (((hit.point - this.movement.lastHitPoint).sqrMagnitude > 0.001f) || (this.lastGroundNormal == Vector3.zero))

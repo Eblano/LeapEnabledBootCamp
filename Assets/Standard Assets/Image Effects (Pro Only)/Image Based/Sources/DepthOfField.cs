@@ -238,7 +238,7 @@ public partial class DepthOfField : PostEffectsBase
         RenderTexture lrTex1 = RenderTexture.GetTemporary((int) (source.width / divider), (int) (source.height / divider), 0);
         RenderTexture lrTex2 = RenderTexture.GetTemporary((int) (source.width / divider), (int) (source.height / divider), 0);
         // high quality DOF should blur the forground       
-        if (this.quality >= DofQualitySetting.High)
+        if (quality >= DofQualitySetting.High)
         {
             lrTex0.filterMode = FilterMode.Point;
             lrTex1.filterMode = FilterMode.Point;
@@ -247,19 +247,19 @@ public partial class DepthOfField : PostEffectsBase
             // downsample depth (and encoding in RGBA)
             Graphics.Blit(source, lrTex1, this._depthConvertMaterial);
             source.filterMode = FilterMode.Bilinear;
-            //
-            // depth blur 	(result in lrTex1)          	       
-            int it = 0;
-            while (it < this.foregroundBlurIterations)
+
+            // depth blur (result in lrTex1)
+            int itDepthBlur = 0; // Declare and initialize "itDepthBlur"
+            while (itDepthBlur < this.foregroundBlurIterations)
             {
                 this._depthBlurMaterial.SetVector("offsets", new Vector4(0f, this.foregroundBlurSpread / lrTex1.height, 0f, this._focalDistance01));
                 Graphics.Blit(lrTex1, lrTex0, this._depthBlurMaterial);
                 this._depthBlurMaterial.SetVector("offsets", new Vector4(this.foregroundBlurSpread / lrTex1.width, 0f, 0f, this._focalDistance01));
                 Graphics.Blit(lrTex0, lrTex1, this._depthBlurMaterial);
-                it++;
+                itDepthBlur++;
             }
-            //
-            // simple blur 	(result in lrTex0)
+
+            // simple blur (result in lrTex0)
             lrTex0.filterMode = FilterMode.Bilinear;
             lrTex1.filterMode = FilterMode.Bilinear;
             lrTex2.filterMode = FilterMode.Bilinear;
@@ -270,22 +270,24 @@ public partial class DepthOfField : PostEffectsBase
             }
             else
             {
-                 // high resolution, divider is 1
+                // high resolution, divider is 1
                 this._blurMaterial.SetVector("offsets", new Vector4(0f, this.blurSpread / lrTex1.height, 0f, 0f));
                 Graphics.Blit(source, lrTex2, this._blurMaterial);
                 this._blurMaterial.SetVector("offsets", new Vector4(this.blurSpread / lrTex1.width, 0f, 0f, 0f));
                 Graphics.Blit(lrTex2, lrTex0, this._blurMaterial);
                 tempBlurIterations = tempBlurIterations - 1;
             }
-            it = 0;
-            while (it < tempBlurIterations)
+
+            int itSimpleBlur = 0; // Declare and initialize "itSimpleBlur"
+            while (itSimpleBlur < tempBlurIterations)
             {
                 this._blurMaterial.SetVector("offsets", new Vector4(0f, this.blurSpread / lrTex1.height, 0f, 0f));
                 Graphics.Blit(lrTex0, lrTex2, this._blurMaterial);
                 this._blurMaterial.SetVector("offsets", new Vector4(this.blurSpread / lrTex1.width, 0f, 0f, 0f));
                 Graphics.Blit(lrTex2, lrTex0, this._blurMaterial);
-                it++;
+                itSimpleBlur++;
             }
+
             // calculate the foreground blur factor and add to our COC
             lrTex1.filterMode = FilterMode.Point;
             this._foregroundBlurMaterial.SetFloat("focalFalloff", this.focalFalloff);
@@ -301,7 +303,7 @@ public partial class DepthOfField : PostEffectsBase
             lrTex1.filterMode = FilterMode.Bilinear;
             lrTex2.filterMode = FilterMode.Bilinear;
         }
-         // high quality
+        // high quality
         // weighted by COC blur
         int tempStdBlurIterations = this.blurIterations;
         if (this.resolution != DofResolutionSetting.High)
@@ -310,7 +312,7 @@ public partial class DepthOfField : PostEffectsBase
         }
         else
         {
-             // high resolution and divider == 1
+            // high resolution and divider == 1
             if (this.quality >= DofQualitySetting.Medium)
             {
                 this._weightedBlurMaterial.SetVector("offsets", new Vector4(0f, this.blurSpread / lrTex1.height, 0f, this._focalDistance01));
@@ -327,8 +329,9 @@ public partial class DepthOfField : PostEffectsBase
             }
             tempStdBlurIterations = tempStdBlurIterations - 1;
         }
-        it = 0;
-        while (it < tempStdBlurIterations)
+
+        int itStdBlur = 0; // Declare and initialize "itStdBlur"
+        while (itStdBlur < tempStdBlurIterations)
         {
             if (this.quality >= DofQualitySetting.Medium)
             {
@@ -344,9 +347,9 @@ public partial class DepthOfField : PostEffectsBase
                 this._blurMaterial.SetVector("offsets", new Vector4(this.blurSpread / lrTex1.width, 0f, 0f, 0f));
                 Graphics.Blit(lrTex2, lrTex1, this._blurMaterial);
             }
-            it++;
+            itStdBlur++;
         }
-        //
+
         // composite the final image, depending on COC, source and low resolution color buffers
         this._dofMaterial.SetFloat("focalDistance01", this._focalDistance01);
         this._dofMaterial.SetTexture("_LowRez", lrTex1);
@@ -355,6 +358,9 @@ public partial class DepthOfField : PostEffectsBase
         RenderTexture.ReleaseTemporary(lrTex1);
         RenderTexture.ReleaseTemporary(lrTex2);
     }
+
+    // The rest of your code remains the same...
+
 
     public DofResolutionSetting resolution;
     public DofQualitySetting quality;

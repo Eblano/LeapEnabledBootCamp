@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class SceneSettings : object
@@ -72,7 +73,7 @@ public class GameQualitySettings : MonoBehaviour
     public Vector2 staticLayersRange;
     public Terrain nearTerrain;
     public GameObject[] ambientParticleObjects;
-    private object[] _ambientParticleObjectSettings;
+    private List<object> _ambientParticleObjectSettings = new List<object>();
     public Light[] lights;
     public bool mainMenu;
     public virtual void Start()
@@ -80,7 +81,7 @@ public class GameQualitySettings : MonoBehaviour
         GameQualitySettings._dynamicLayersRange = this.dynamicLayersRange;
         GameQualitySettings._staticLayersRange = this.staticLayersRange;
         GameQualitySettings._ambientParticles = GameQualitySettings.ambientParticles;
-        this._ambientParticleObjectSettings = new object[0];
+        this._ambientParticleObjectSettings = new List<object>();
         foreach (GameObject go in this.ambientParticleObjects)
         {
             AmbientParticleSettings setting = new AmbientParticleSettings();
@@ -96,7 +97,7 @@ public class GameQualitySettings : MonoBehaviour
                     setting.maxEmission = mainModule.startLifetimeMultiplier;
                 }
             }
-            this._ambientParticleObjectSettings.Push(setting);
+            this._ambientParticleObjectSettings.Add(setting);
         }
         this.InitializeGameSettings();
         this.InitializeSceneSettings();

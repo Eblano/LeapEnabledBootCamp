@@ -11,7 +11,7 @@ public class TrainingDummyPartDestructor : MonoBehaviour
     private string colorName;
     public virtual void Start()
     {
-        this.r = this.GetComponent<Renderer>();
+        this.r = this.GetComponent<MeshRenderer>();
         if (this.r.material.HasProperty("_MainColor"))
         {
             this.colorName = "_MainColor";

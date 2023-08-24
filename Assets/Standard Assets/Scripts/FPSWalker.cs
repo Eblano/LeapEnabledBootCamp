@@ -15,7 +15,7 @@ public partial class FPSWalker : MonoBehaviour
 
     public virtual void Update()
     {
-        moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        Vector3 moveDirection = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         moveDirection = this.cam.TransformDirection(moveDirection);
         moveDirection = moveDirection * this.speed;
         this.controller.Move(moveDirection * Time.deltaTime);

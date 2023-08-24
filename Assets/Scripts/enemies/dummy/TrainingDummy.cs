@@ -294,24 +294,29 @@ public class TrainingDummy : MonoBehaviour
                 case "wood":
                     hitType = HitType.WOOD;
                     go = GameObject.Instantiate(this.woodParticle, hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                    break;
                 case "metal":
                     hitType = HitType.METAL;
                     go = GameObject.Instantiate(this.metalParticle, hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                    break;
                 case "car":
                     hitType = HitType.METAL;
                     go = GameObject.Instantiate(this.metalParticle, hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                    break;
                 case "concrete":
                     hitType = HitType.CONCRETE;
                     go = GameObject.Instantiate(this.concreteParticle, hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                    break;
                 case "dirt":
                     hitType = HitType.CONCRETE;
                     go = GameObject.Instantiate(this.sandParticle, hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                    break;
                 case "sand":
                     hitType = HitType.CONCRETE;
                     go = GameObject.Instantiate(this.sandParticle, hit.point, Quaternion.FromToRotation(Vector3.up, hit.normal)) as GameObject;
+                    break;
                 default:
                     return;
-                    break;
             }
             go.layer = hit.collider.gameObject.layer;
             if (hit.collider.GetComponent<Renderer>() == null)
@@ -414,7 +419,7 @@ public class TrainingDummy : MonoBehaviour
             if (dp.gameObject != this.weapon)
             {
                 dp.gameObject.active = false;
-                i = 0;
+                var i = 0;
                 while (i < dp.brokeParts.Length)
                 {
                     go = dp.brokeParts[i];
@@ -553,7 +558,7 @@ public class TrainingDummy : MonoBehaviour
             if (dp.gameObject != this.weapon)
             {
                 dp.gameObject.active = false;
-                i = 0;
+                var i = 0;
                 while (i < dp.brokeParts.Length)
                 {
                     go = dp.brokeParts[i];

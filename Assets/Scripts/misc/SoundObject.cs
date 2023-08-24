@@ -48,10 +48,13 @@ public class SoundObject : MonoBehaviour
             {
                 case "wood":
                     this.ac = so.defaultWoodSound;
+                    break;
                 case "metal":
                     this.ac = so.defaultMetalSound;
+                    break;
                 case "concrete":
                     this.ac = so.defaultConcreteSound;
+                    break;
                 default:
                     this.ac = so.defaultSound;
                     break;

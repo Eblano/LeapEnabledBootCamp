@@ -1,104 +1,108 @@
+using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
 
-[System.Serializable]
 public class BulletMarkManager : MonoBehaviour
 {
     private static BulletMarkManager instance;
+
     public int maxMarks;
-    public object[] marks;
-    public object[] pushDistances;
-    public virtual void Start()
+    public List<GameObject> marks;
+    public List<float> pushDistances;
+
+    private void Start()
     {
-        if (BulletMarkManager.instance == null)
+        if (instance == null)
         {
-            BulletMarkManager.instance = this;
+            instance = this;
         }
     }
 
     public static float Add(GameObject go)
     {
-        float distance = 0.0f;
-        if (BulletMarkManager.instance == null)
+        if (instance == null)
         {
             GameObject aux = new GameObject("BulletMarkManager");
-            BulletMarkManager.instance = aux.AddComponent<BulletMarkManager>() as BulletMarkManager;
-            BulletMarkManager.instance.marks = new object[0];
-            BulletMarkManager.instance.pushDistances = new object[0];
-            BulletMarkManager.instance.maxMarks = 60;
+            instance = aux.AddComponent<BulletMarkManager>();
+            instance.marks = new List<GameObject>();
+            instance.pushDistances = new List<float>();
+            instance.maxMarks = 60;
         }
-        GameObject auxGO = null;
-        Transform auxT = null;
+
+        GameObject auxGO;
+        Transform auxT;
         Transform currentT = go.transform;
         Vector3 currentPos = currentT.position;
-        float radius = (((currentT.localScale.x * currentT.localScale.x) * 0.25f) + ((currentT.localScale.y * currentT.localScale.y) * 0.25f)) + ((currentT.localScale.z * currentT.localScale.z) * 0.25f);
+        float radius = (currentT.localScale.x * currentT.localScale.x * 0.25f) + (currentT.localScale.y * currentT.localScale.y * 0.25f) + (currentT.localScale.z * currentT.localScale.z * 0.25f);
         radius = Mathf.Sqrt(radius);
         float realRadius = radius * 2;
-        radius = radius * 0.2f;
-        if (BulletMarkManager.instance.marks.Length == BulletMarkManager.instance.maxMarks)
+        radius *= 0.2f;
+
+        float distance;
+
+        if (instance.marks.Count == instance.maxMarks)
         {
-            auxGO = BulletMarkManager.instance.marks[0] as GameObject;
-            UnityEngine.Object.Destroy(auxGO);
-            BulletMarkManager.instance.marks.RemoveAt(0);
-            BulletMarkManager.instance.pushDistances.RemoveAt(0);
+            auxGO = instance.marks[0];
+            Destroy(auxGO);
+            instance.marks.RemoveAt(0);
+            instance.pushDistances.RemoveAt(0);
         }
+
         float pushDistance = 0.0001f;
-        int length = BulletMarkManager.instance.marks.Length;
+        int length = instance.marks.Count;
         int sideMarks = 0;
-        int i = 0;
-        while (i < length)
+        for (int i = 0; i < length; i++)
         {
-            auxGO = BulletMarkManager.instance.marks[i] as GameObject;
+            auxGO = instance.marks[i];
+
             if (auxGO != null)
             {
                 auxT = auxGO.transform;
                 distance = (auxT.position - currentPos).magnitude;
                 if (distance < radius)
                 {
-                    UnityEngine.Object.Destroy(auxGO);
-                    BulletMarkManager.instance.marks.RemoveAt(i);
-                    BulletMarkManager.instance.pushDistances.RemoveAt(i);
+                    Destroy(auxGO);
+                    instance.marks.RemoveAt(i);
+                    instance.pushDistances.RemoveAt(i);
                     i--;
                     length--;
                 }
-                else
+                else if (distance < realRadius)
                 {
-                    if (distance < realRadius)
-                    {
-                        float cDist = (float) BulletMarkManager.instance.pushDistances[i];
-                        pushDistance = Mathf.Max(pushDistance, cDist);
-                    }
+                    float cDist = instance.pushDistances[i];
+
+                    pushDistance = Mathf.Max(pushDistance, cDist);
                 }
             }
             else
             {
-                BulletMarkManager.instance.marks.RemoveAt(i);
-                BulletMarkManager.instance.pushDistances.RemoveAt(i);
+                instance.marks.RemoveAt(i);
+                instance.pushDistances.RemoveAt(i);
                 i--;
                 length--;
             }
-            i++;
         }
-        pushDistance = pushDistance + 0.0005f;
-        BulletMarkManager.instance.marks.Add(go);
-        BulletMarkManager.instance.pushDistances.Add(pushDistance);
+        pushDistance += 0.0005f;
+
+        instance.marks.Add(go);
+        instance.pushDistances.Add(pushDistance);
+
         return pushDistance;
     }
 
     public static void ClearMarks()
     {
-        GameObject go = null;
-        if (BulletMarkManager.instance.marks.Length > 0)
+        GameObject go;
+
+        if (instance.marks.Count > 0)
         {
-            int i = 0;
-            while (i < BulletMarkManager.instance.marks.Length)
+            for (int i = 0; i < instance.marks.Count; i++)
             {
-                go = BulletMarkManager.instance.marks[i] as GameObject;
-                UnityEngine.Object.Destroy(go);
-                i++;
+                go = instance.marks[i];
+
+                Destroy(go);
             }
-            BulletMarkManager.instance.marks.Clear();
+
+            instance.marks.Clear();
         }
     }
-
 }

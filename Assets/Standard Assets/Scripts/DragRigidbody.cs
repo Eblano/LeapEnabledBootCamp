@@ -33,7 +33,7 @@ public partial class DragRigidbody : MonoBehaviour
         if (!this.springJoint)
         {
             GameObject go = new GameObject("Rigidbody dragger");
-            body = go.AddComponent<Rigidbody>();
+            Rigidbody body = go.AddComponent<Rigidbody>();
             this.springJoint = go.AddComponent<SpringJoint>();
             body.isKinematic = true;
         }

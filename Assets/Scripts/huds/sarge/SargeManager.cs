@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class SargeManager : MonoBehaviour
@@ -25,12 +26,12 @@ public class SargeManager : MonoBehaviour
     [UnityEngine.HideInInspector]
     public bool debug;
     private bool audioWasPlaying;
-    private object[] messageQueue;
+    private List<object> messageQueue = new List<object>();
     private bool friendlyFire;
     private SargeInstruction lastInstruction;
     public virtual void Start()
     {
-        this.messageQueue = new object[0];
+        this.messageQueue = new List<object>();
         this.friendlyFire = false;
         this.audioWasPlaying = false;
         this.table = new Hashtable();
@@ -202,7 +203,7 @@ public class SargeManager : MonoBehaviour
                     }
                     else
                     {
-                        if (this.messageQueue.Length > 0)
+                        if (this.messageQueue.Count > 0)
                         {
                             string m = this.messageQueue[0] as string;
                             this.messageQueue.RemoveAt(0);

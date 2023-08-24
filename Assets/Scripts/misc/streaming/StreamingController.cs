@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public enum StreamingStep
 {
@@ -27,7 +28,7 @@ public class StreamingController : MonoBehaviour
     public Transform heliParent;
     public int cutIterations;
     public float[] fixedCamAnimationWeights;
-    public Transform[] fixedCamAngles;
+    public List<Transform> fixedCamAngles = new List<Transform>();
     public GameObject cloudBed;
     public float theScale;
     public float lerpSpeed;
@@ -489,7 +490,7 @@ public class StreamingController : MonoBehaviour
             this.EnableMouseControl(false);
             this.cloudBed.SendMessage("SetCut", 1f);
             float aniWeight = 1f;
-            int indexForSpeed = camAnglesToShow % this.fixedCamAngles.Length;
+            int indexForSpeed = camAnglesToShow % this.fixedCamAngles.Count;
             if (indexForSpeed >= this.fixedCamAnimationWeights.Length)
             {
                 indexForSpeed = this.fixedCamAnimationWeights.Length - 1;
@@ -501,8 +502,8 @@ public class StreamingController : MonoBehaviour
             ani["helicopterintro_Mid"].speed = aniWeight;
             while (time2Play > 0f)
             {
-                this.transform.position = this.fixedCamAngles[camAnglesToShow % this.fixedCamAngles.length].position;
-                this.transform.rotation = this.fixedCamAngles[camAnglesToShow % this.fixedCamAngles.length].rotation;
+                this.transform.position = this.fixedCamAngles[camAnglesToShow % this.fixedCamAngles.Count].position;
+                this.transform.rotation = this.fixedCamAngles[camAnglesToShow % this.fixedCamAngles.Count].rotation;
                 this.CheckTerrainHide();
                 yield return null;
                 time2Play = time2Play - Time.deltaTime;

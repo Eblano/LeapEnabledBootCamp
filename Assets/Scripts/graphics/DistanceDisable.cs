@@ -1,16 +1,15 @@
+using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
 
 public enum ObjectState
 {
-    ENABLED = 0,
-    DISABLED = 1,
-    ENABLING = 2,
-    DISABLING = 3
+    ENABLED,
+    DISABLED,
+    ENABLING,
+    DISABLING
 }
 
-[System.Serializable]
-public class ObjectInfo : object
+public class ObjectInfo
 {
     public Transform transform;
     public Renderer renderer;
@@ -23,38 +22,44 @@ public class ObjectInfo : object
     public Color oColor;
     public GameObject gameObject;
 }
-[System.Serializable]
+
 public class DistanceDisable : MonoBehaviour
 {
-    public int objectsPerFrame;
-    public float minObjectDistance;
-    public float maxObjectDistance;
-    public object[] objects;
+    public int objectsPerFrame = 30;
+    public float minObjectDistance = 50.0f;
+    public float maxObjectDistance = 100.0f;
+    public List<ObjectInfo> objects;
     public Transform soldierRef;
     private int index;
     public Shader alphaShader;
     private float maxObjectDistanceNormal;
-    public virtual void Start()
+
+    private void Start()
     {
-        this.alphaShader = Shader.Find("Transparent/VertexLit");
-        if (this.soldierRef == null)
+        alphaShader = Shader.Find("Transparent/VertexLit");
+
+        if (soldierRef == null)
         {
-            UnityEngine.Object.Destroy(this);
+            Destroy(this);
         }
         else
         {
-            this.index = 0;
-            this.maxObjectDistance = this.maxObjectDistance * this.maxObjectDistance;
-            this.minObjectDistance = this.minObjectDistance * this.minObjectDistance;
-            this.maxObjectDistanceNormal = 1f / this.maxObjectDistance;
-            this.objects = new object[0];
-            this.GetAllChilds(this.transform);
+            index = 0;
+
+            maxObjectDistance *= maxObjectDistance;
+            minObjectDistance *= minObjectDistance;
+            maxObjectDistanceNormal = 1.0f / maxObjectDistance;
+
+            objects = new List<ObjectInfo>();
+
+            GetAllChilds(transform);
         }
     }
 
-    public virtual void GetAllChilds(Transform t)
+    private void GetAllChilds(Transform t)
     {
         GameObject auxGO = t.gameObject;
+
         if (auxGO.GetComponent<Renderer>() != null)
         {
             ObjectInfo dObject = new ObjectInfo();
@@ -66,78 +71,65 @@ public class DistanceDisable : MonoBehaviour
             dObject.color = dObject.material.color;
             dObject.oColor = dObject.material.color;
             dObject.gameObject = auxGO;
-            this.objects.Add(dObject);
+            objects.Add(dObject);
         }
-        int i = 0;
-        while (i < t.childCount)
+
+        for (int i = 0; i < t.childCount; i++)
         {
-            this.GetAllChilds(t.GetChild(i));
-            i++;
+            GetAllChilds(t.GetChild(i));
         }
     }
 
-    public virtual void Update()
+    private void Update()
     {
-        if (this.objects == null)
+        if (objects == null) return;
+
+        Vector3 soldierPos = soldierRef.position;
+
+        ObjectInfo cObject;
+
+        for (int i = index; (i < objects.Count) && (i < index + objectsPerFrame); i++)
         {
-            return;
-        }
-        Vector3 soldierPos = this.soldierRef.position;
-        ObjectInfo cObject = null;
-        int i = this.index;
-        while ((i < this.objects.Length) && (i < (this.index + this.objectsPerFrame)))
-        {
-            cObject = (ObjectInfo) this.objects[i];
-            if (!cObject.gameObject.active)
-            {
-                goto Label_for_20;
-            }
+            cObject = objects[i];
+
+            if (!cObject.gameObject.activeSelf) continue;
+
             cObject.distance = (cObject.transform.position - soldierPos).sqrMagnitude;
-            if (cObject.distance > this.maxObjectDistance)
+
+            if (cObject.distance > maxObjectDistance)
             {
                 if (cObject.renderer.enabled)
                 {
                     cObject.renderer.enabled = false;
                 }
             }
+            else if (cObject.distance > minObjectDistance)
+            {
+                if (!cObject.renderer.enabled)
+                {
+                    cObject.renderer.enabled = true;
+                }
+
+                cObject.material.shader = alphaShader;
+                cObject.color.a = Mathf.Clamp(1.0f - ((cObject.distance - minObjectDistance) * maxObjectDistanceNormal), 0.0f, 1.0f);
+                cObject.material.color = cObject.color;
+            }
             else
             {
-                if (cObject.distance > this.minObjectDistance)
+                if (!cObject.renderer.enabled)
                 {
-                    if (!cObject.renderer.enabled)
-                    {
-                        cObject.renderer.enabled = true;
-                    }
-                    cObject.material.shader = this.alphaShader;
-                    cObject.color.a = Mathf.Clamp(1f - ((cObject.distance - this.minObjectDistance) * this.maxObjectDistanceNormal), 0f, 1f);
-                    cObject.material.color = cObject.color;
+                    cObject.renderer.enabled = true;
                 }
-                else
-                {
-                    if (!cObject.renderer.enabled)
-                    {
-                        cObject.renderer.enabled = true;
-                    }
-                    cObject.material.shader = cObject.baseShader;
-                    cObject.material.color = cObject.oColor;
-                }
+
+                cObject.material.shader = cObject.baseShader;
+                cObject.material.color = cObject.oColor;
             }
+
             cObject.lastUpdate = Time.time;
-            Label_for_20:
-            i++;
         }
-        this.index = this.index + this.objectsPerFrame;
-        if (this.index >= this.objects.Length)
-        {
-            this.index = 0;
-        }
-    }
 
-    public DistanceDisable()
-    {
-        this.objectsPerFrame = 30;
-        this.minObjectDistance = 50f;
-        this.maxObjectDistance = 100f;
-    }
+        index += objectsPerFrame;
 
+        if (index >= objects.Count) index = 0;
+    }
 }

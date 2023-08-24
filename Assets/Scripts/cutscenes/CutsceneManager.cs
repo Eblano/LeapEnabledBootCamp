@@ -54,7 +54,7 @@ public class CutsceneManager : MonoBehaviour
         {
             case "Helicopter":
                 this.heliCutscene.DestroyScene();
+                break;
         }
     }
-
 }
