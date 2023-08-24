@@ -82,7 +82,7 @@ class Gun extends MonoBehaviour
 	public var shotingEmitter : GunParticles;
 	private var shottingParticles : Transform;
 	
-	public var capsuleEmitter : ParticleEmitter[];
+	public var capsuleEmitter : ParticleSystem[];
 	
 	public var shotLight : ShotLight;
 	
@@ -107,7 +107,7 @@ class Gun extends MonoBehaviour
 			for(var i : int = 0; i < capsuleEmitter.Length; i++)
 			{
 				if (capsuleEmitter[i] != null)
-                    capsuleEmitter[i].emit = false;
+                    capsuleEmitter[i].enableEmission = false;
 			}
 		}
 		
@@ -179,7 +179,7 @@ class Gun extends MonoBehaviour
 					{
 						for(var i : int = 0; i < capsuleEmitter.Length; i++)
 						{
-							capsuleEmitter[i].Emit();
+							capsuleEmitter[i].Play();
 						}
 					}
 					

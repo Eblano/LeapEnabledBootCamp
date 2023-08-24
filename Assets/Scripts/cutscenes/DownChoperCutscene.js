@@ -24,7 +24,7 @@ class DownChoperCutscene extends MonoBehaviour
 
     public var pilot : GameObject;
     public var wingman : GameObject;
-    public var particles : ParticleEmitter[];
+    public var particles : ParticleSystem[];
     public var windZone : GameObject;
     
     public var soldierCamera : GameObject;
@@ -96,9 +96,9 @@ class DownChoperCutscene extends MonoBehaviour
                 {
                     if(particles[p] == null) continue;
 
-                    if(particles[p].enabled)
+                    if(particles[p].emission.enabled)
                     {
-                        particles[p].enabled = false;
+                        particles[p].emission.enabled = false;
                     }
                 }
             }
@@ -133,9 +133,9 @@ class DownChoperCutscene extends MonoBehaviour
                     {
                         if(particles[p] == null) continue;
 
-                        if(!particles[p].enabled)
+                        if(!particles[p].emission.enabled)
                         {
-                            particles[p].enabled = true;
+                            particles[p].emission.enabled = true;
                         }
                     }
                 }

@@ -70,7 +70,7 @@ public class GlassScript : MonoBehaviour
     private Texture2D instanceTextBaseMarks;
 
     //Particle emmiter on center of each point of glass.
-    private ParticleEmitter[,] matrixEmmiters; 
+    private ParticleSystem[,] matrixEmmiters; 
 
     //Number of breaked points.
     private int numberToBreak;
@@ -207,7 +207,7 @@ public class GlassScript : MonoBehaviour
         parentEmmiters.rotation = transform.rotation;
         parentEmmiters.localScale = Vector3.one;
 
-        matrixEmmiters = new ParticleEmitter[tileHorizontal, tileVertical];
+        matrixEmmiters = new ParticleSystem[tileHorizontal, tileVertical];
 
         auxHorizontal = 10f / (float)tileHorizontal;
         auxVertical = 10f / (float)tileVertical;
@@ -313,7 +313,7 @@ public class GlassScript : MonoBehaviour
 		{
 			if(matrixEmmiters[p_matrixX - 1, p_matrixY - 1] == null)
 			{
-				matrixEmmiters[p_matrixX - 1, p_matrixY - 1] = ((GameObject)GameObject.Instantiate(particlePrefab, Vector3.zero, Quaternion.identity)).GetComponent<ParticleEmitter>();
+				matrixEmmiters[p_matrixX - 1, p_matrixY - 1] = ((GameObject)GameObject.Instantiate(particlePrefab, Vector3.zero, Quaternion.identity)).GetComponent<ParticleSystem>();
 				
                 matrixEmmiters[p_matrixX - 1, p_matrixY - 1].name = string.Format("emmiter{0}{1}", p_matrixX - 1, p_matrixY - 1);
                 matrixEmmiters[p_matrixX - 1, p_matrixY - 1].transform.parent = parentEmmiters;
@@ -322,7 +322,7 @@ public class GlassScript : MonoBehaviour
                 matrixEmmiters[p_matrixX - 1, p_matrixY - 1].transform.localPosition = new Vector3((auxHorizontal * (tileHorizontal - p_matrixX)) + (auxHorizontal * 0.5f) - 5f, 0.0f, (auxVertical * (tileVertical - p_matrixY)) + (auxVertical * 0.5f) - 5f);//new Vector3((auxHorizontal * (tileHorizontal - p_matrixX - 2)) + (auxHorizontal * 0.5f) - 5f, 0.0f, (auxVertical * (tileVertical - p_matrixY - 2)) + (auxVertical * 0.5f) - 5f);
 			}
 			
-            matrixEmmiters[p_matrixX - 1, p_matrixY - 1].Emit();
+            matrixEmmiters[p_matrixX - 1, p_matrixY - 1].Play();
 		}
 
         //Set hitted mark.
@@ -586,7 +586,7 @@ public class GlassScript : MonoBehaviour
                 {
 					if(matrixEmmiters[i - 1, j - 1] == null)
 					{
-						matrixEmmiters[i - 1, j - 1] = ((GameObject)GameObject.Instantiate(particlePrefab, Vector3.zero, Quaternion.identity)).GetComponent<ParticleEmitter>();
+						matrixEmmiters[i - 1, j - 1] = ((GameObject)GameObject.Instantiate(particlePrefab, Vector3.zero, Quaternion.identity)).GetComponent<ParticleSystem>();
 						
 		                matrixEmmiters[i - 1, j - 1].name = string.Format("emmiter{0}{1}", i - 1, j - 1);
 		                matrixEmmiters[i - 1, j - 1].transform.parent = parentEmmiters;
@@ -595,7 +595,7 @@ public class GlassScript : MonoBehaviour
 		                matrixEmmiters[i - 1, j - 1].transform.localPosition = new Vector3((auxHorizontal * (tileHorizontal - i)) + (auxHorizontal * 0.5f) - 5f, 0.0f, (auxVertical * (tileVertical - j)) + (auxVertical * 0.5f) - 5f);//new Vector3((auxHorizontal * (tileHorizontal - i - 2)) + (auxHorizontal * 0.5f) - 5f, 0.0f, (auxVertical * (tileVertical - j - 2)) + (auxVertical * 0.5f) - 5f);
 					}
 
-                    matrixEmmiters[i - 1, j - 1].Emit();
+                    matrixEmmiters[i - 1, j - 1].Play();
                 }
 
                 matrixOfGlass[i, j] = true;
@@ -646,7 +646,7 @@ public class GlassScript : MonoBehaviour
                     {
 						if(matrixEmmiters[i - 1, j - 1] == null)
 						{
-							matrixEmmiters[i - 1, j - 1] = ((GameObject)GameObject.Instantiate(particlePrefab, Vector3.zero, Quaternion.identity)).GetComponent<ParticleEmitter>();
+							matrixEmmiters[i - 1, j - 1] = ((GameObject)GameObject.Instantiate(particlePrefab, Vector3.zero, Quaternion.identity)).GetComponent<ParticleSystem>();
 							
 			                matrixEmmiters[i - 1, j - 1].name = string.Format("emmiter{0}{1}", i - 1, j - 1);
 			                matrixEmmiters[i - 1, j - 1].transform.parent = parentEmmiters;
@@ -655,7 +655,7 @@ public class GlassScript : MonoBehaviour
 			                matrixEmmiters[i - 1, j - 1].transform.localPosition = new Vector3((auxHorizontal * (tileHorizontal - i)) + (auxHorizontal * 0.5f) - 5f, 0.0f, (auxVertical * (tileVertical - j)) + (auxVertical * 0.5f) - 5f);//new Vector3((auxHorizontal * (tileHorizontal - i - 2)) + (auxHorizontal * 0.5f) - 5f, 0.0f, (auxVertical * (tileVertical - j - 2)) + (auxVertical * 0.5f) - 5f);//new Vector3((auxHorizontal * (tileHorizontal - i - 2)) + (auxHorizontal * 0.5f) - 5f, 0.0f, (auxVertical * (tileVertical - j - 2)) + (auxVertical * 0.5f) - 5f);
 						}
 						
-                        matrixEmmiters[i - 1, j - 1].Emit();
+                        matrixEmmiters[i - 1, j - 1].Play();
                     }
 
                     matrixOfGlass[i, j] = true;

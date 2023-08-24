@@ -135,16 +135,18 @@ class SoundObject extends MonoBehaviour
 							go.GetComponent.<AudioSource>().Play();
 						}
 						
-						var emitter : ParticleEmitter;
-						for(var i : int = 0; i < go.transform.childCount; i++)
-						{
-							emitter = go.transform.GetChild(i).GetComponent("ParticleEmitter") as ParticleEmitter;
-							
-							if(emitter == null) continue;
-							
-							emitter.emit = false;
-							emitter.Emit();
-						}
+						var emitter : ParticleSystem;
+
+                        for (var i : int = 0; i < go.transform.childCount; i++)
+                        {
+                            emitter = go.transform.GetChild(i).GetComponent.<ParticleSystem>() as ParticleSystem;
+                            
+                            if (emitter == null) continue;
+                            
+                            var emissionModule : ParticleSystem.EmissionModule = emitter.emission;
+                            emissionModule.enabled = false;
+                            emitter.Emit(1); // Если вы хотите эмулировать только одну частицу
+                        }
 						
 						var aux : AutoDestroy = go.AddComponent.<AutoDestroy>() as AutoDestroy;
 						aux.time = 2;

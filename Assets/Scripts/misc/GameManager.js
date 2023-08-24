@@ -5,7 +5,7 @@
 class GameManager extends MonoBehaviour
 {
 	public var gamePlaySoldier : GameObject;
-    public var soldierSmoke : ParticleEmitter;
+    public var soldierSmoke : ParticleSystem;
     public var sarge : SargeManager;
 
 	static public var receiveDamage : boolean;
@@ -113,7 +113,7 @@ class GameManager extends MonoBehaviour
         {
             if(GameQualitySettings.ambientParticles)
             {
-                soldierSmoke.emit = true;
+                soldierSmoke.enableEmission = true;
             }
         }
 

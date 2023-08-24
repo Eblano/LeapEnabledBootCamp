@@ -104,17 +104,22 @@ class GameQualitySettings extends MonoBehaviour
 		_ambientParticles = ambientParticles;
 		_ambientParticleObjectSettings = new Array();
 		
-		for(var go : GameObject in ambientParticleObjects) 
-		{
-			var setting : AmbientParticleSettings = new AmbientParticleSettings();
-			if(go) {
-			setting.minSize = go.GetComponent.<ParticleEmitter>().minSize;
-			setting.maxSize = go.GetComponent.<ParticleEmitter>().maxSize;
-			setting.minEmission = go.GetComponent.<ParticleEmitter>().minEmission;
-			setting.maxEmission = go.GetComponent.<ParticleEmitter>().maxEmission;
-			}
-			_ambientParticleObjectSettings.Push(setting);
-		}
+        for (var go : GameObject in ambientParticleObjects) 
+        {
+            var setting : AmbientParticleSettings = new AmbientParticleSettings();
+            if (go) {
+                var particleSystem : ParticleSystem = go.GetComponent.<ParticleSystem>();
+                if (particleSystem != null) {
+                    var mainModule : ParticleSystem.MainModule = particleSystem.main;
+                    setting.minSize = mainModule.startSizeMultiplier;
+                    setting.maxSize = mainModule.startSizeMultiplier;
+                    setting.minEmission = mainModule.startLifetimeMultiplier;
+                    setting.maxEmission = mainModule.startLifetimeMultiplier;
+                }
+            }
+            _ambientParticleObjectSettings.Push(setting);
+        }
+
 		
 		InitializeGameSettings();
 		
@@ -192,26 +197,31 @@ class GameQualitySettings extends MonoBehaviour
 		}
 	}
 	
-	function UpdateAmbientParticleQuality() 
-	{
-		if(_particleQualityMultiplier != particleQualityMultiplier) 
-		{	
-			_particleQualityMultiplier = particleQualityMultiplier;	
-			
-			for(var k : int = 0; k < ambientParticleObjects.length; k++)
-			{
-				var setting : AmbientParticleSettings = _ambientParticleObjectSettings[k] as AmbientParticleSettings;
-					
-				if(ambientParticleObjects[k] == null) continue;
-				if(!ambientParticleObjects[k].active) continue;			
-			
-				ambientParticleObjects[k].GetComponent.<ParticleEmitter>().minSize = setting.minSize*_particleQualityMultiplier;
-				ambientParticleObjects[k].GetComponent.<ParticleEmitter>().maxSize = setting.maxSize*_particleQualityMultiplier;
-				ambientParticleObjects[k].GetComponent.<ParticleEmitter>().minEmission = setting.minEmission*_particleQualityMultiplier;
-				ambientParticleObjects[k].GetComponent.<ParticleEmitter>().maxEmission = setting.maxEmission*_particleQualityMultiplier;
-			}
-		}	
-	}
+    function UpdateAmbientParticleQuality()
+    {
+        if (_particleQualityMultiplier != particleQualityMultiplier)
+        {   
+            _particleQualityMultiplier = particleQualityMultiplier;    
+
+            for (var k : int = 0; k < ambientParticleObjects.length; k++)
+            {
+                var setting : AmbientParticleSettings = _ambientParticleObjectSettings[k] as AmbientParticleSettings;
+                
+                if (ambientParticleObjects[k] == null) continue;
+                if (!ambientParticleObjects[k].active) continue;
+
+                var particleSystem : ParticleSystem = ambientParticleObjects[k].GetComponent.<ParticleSystem>();
+                if (particleSystem != null)
+                {
+                    var mainModule : ParticleSystem.MainModule = particleSystem.main;
+                    mainModule.startSizeMultiplier = setting.minSize * _particleQualityMultiplier;
+                    mainModule.startSizeMultiplier = setting.maxSize * _particleQualityMultiplier;
+                    mainModule.startLifetimeMultiplier = setting.minEmission * _particleQualityMultiplier;
+                    mainModule.startLifetimeMultiplier = setting.maxEmission * _particleQualityMultiplier;
+                }
+            }
+        }
+    }
 	
 	function InitializeGameSettings()
 	{

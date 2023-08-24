@@ -4,13 +4,13 @@
 
 class MainMenuEffects extends MonoBehaviour
 {
-	public var emitter : ParticleEmitter;
-	
-	function Start()
-	{
-		if(emitter != null)
-		{
-			emitter.Simulate(10);
-		}	
-	}
+    public var customParticleSystem : ParticleSystem;
+
+    function Start()
+    {
+        if (customParticleSystem != null)
+        {
+            customParticleSystem.Simulate(10);
+        }
+    }
 }

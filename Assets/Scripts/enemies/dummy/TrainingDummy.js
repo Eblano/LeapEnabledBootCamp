@@ -218,7 +218,7 @@ class TrainingDummy extends MonoBehaviour
 			if(failEffectTimer <= 0.0)
 			{
 				failEffectTimer = Mathf.Max(Random.Range(failEffectTime - failEffectTimeVariation, failEffectTime + failEffectTimeVariation), 0.5);
-				(failEffect.GetComponent("ParticleEmitter") as ParticleEmitter).Emit();
+				(failEffect.GetComponent("ParticleSystem") as ParticleSystem).Play();
 			}
 		}
 	}
